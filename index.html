@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Azure Hotel — Booking Software Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #C9A96E;
+    --gold-light: #E8D5B0;
+    --gold-dark: #8B6E3E;
+    --navy: #0D1B2A;
+    --navy-mid: #1A2E42;
+    --navy-light: #243D56;
+    --cream: #F7F3EE;
+    --cream-dark: #EDE6DB;
+    --white: #FFFFFF;
+    --text-dark: #0D1B2A;
+    --text-mid: #4A5568;
+    --text-light: #8896A5;
+    --border: rgba(201, 169, 110, 0.25);
+    --shadow: 0 8px 48px rgba(13, 27, 42, 0.12);
+    --shadow-sm: 0 2px 16px rgba(13, 27, 42, 0.08);
+    --radius: 2px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13, 27, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+    padding: 0 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 300; letter-spacing: 0.12em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    background: var(--gold); color: var(--navy);
+    border: none; padding: 0.55rem 1.5rem;
+    font-family: 'Jost', sans-serif; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    border-radius: var(--radius); transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    background:
+      linear-gradient(to bottom, rgba(13,27,42,0.7) 0%, rgba(13,27,42,0.4) 50%, rgba(13,27,42,0.75) 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1800' height='900'%3E%3Crect width='1800' height='900' fill='%230D1B2A'/%3E%3Crect x='0' y='400' width='1800' height='500' fill='%23152436'/%3E%3Crect x='200' y='100' width='320' height='500' rx='4' fill='%231A2E42'/%3E%3Crect x='220' y='120' width='280' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='220' y='220' width='280' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='220' y='320' width='280' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='220' y='420' width='280' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='220' y='520' width='280' height='60' rx='2' fill='%23243D56'/%3E%3Crect x='580' y='50' width='420' height='600' rx='4' fill='%231A2E42'/%3E%3Crect x='600' y='70' width='380' height='200' rx='2' fill='%23243D56'/%3E%3Crect x='600' y='290' width='380' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='600' y='390' width='380' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='600' y='490' width='380' height='80' rx='2' fill='%23243D56'/%3E%3Crect x='1060' y='150' width='280' height='420' rx='4' fill='%231A2E42'/%3E%3Crect x='1080' y='170' width='240' height='120' rx='2' fill='%23243D56'/%3E%3Crect x='1080' y='310' width='240' height='60' rx='2' fill='%23243D56'/%3E%3Crect x='1080' y='390' width='240' height='60' rx='2' fill='%23243D56'/%3E%3Crect x='1080' y='470' width='240' height='60' rx='2' fill='%23243D56'/%3E%3Crect x='1400' y='200' width='260' height='360' rx='4' fill='%231A2E42'/%3E%3Crect x='1420' y='220' width='220' height='100' rx='2' fill='%23243D56'/%3E%3Crect x='1420' y='340' width='220' height='50' rx='2' fill='%23243D56'/%3E%3Crect x='1420' y='410' width='220' height='50' rx='2' fill='%23243D56'/%3E%3Cellipse cx='900' cy='870' rx='700' ry='40' fill='%230a1520' opacity='.5'/%3E%3Ctext x='900' y='760' font-family='Georgia,serif' font-size='28' fill='%23C9A96E' text-anchor='middle' opacity='.4' letter-spacing='8'%3EAZURE HOTEL%3C/text%3E%3C/svg%3E") center/cover no-repeat;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+  }
+  .hero-inner { max-width: 800px; }
+  .hero-eyebrow {
+    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 300; line-height: 1.05;
+    color: var(--white); margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .hero p {
+    color: rgba(255,255,255,0.75); font-size: 1.05rem;
+    max-width: 520px; margin: 0 auto 2.5rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.8s 0.3s ease both; }
+  .btn-primary {
+    background: var(--gold); color: var(--navy);
+    border: none; padding: 0.9rem 2.5rem;
+    font-family: 'Jost', sans-serif; font-size: 0.8rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    border-radius: var(--radius); transition: background 0.2s, transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent; color: var(--white);
+    border: 1px solid rgba(255,255,255,0.5); padding: 0.9rem 2.5rem;
+    font-family: 'Jost', sans-serif; font-size: 0.8rem; font-weight: 400;
+    letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    border-radius: var(--radius); transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: rgba(255,255,255,0.5); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    animation: fadeIn 1.5s 0.8s ease both;
+  }
+  .hero-scroll::after {
+    content: ''; width: 1px; height: 48px;
+    background: linear-gradient(to bottom, rgba(201,169,110,0.8), transparent);
+    animation: scrollLine 2s infinite;
+  }
+
+  /* ─── SEARCH BAR ─── */
+  .search-section {
+    background: var(--navy);
+    padding: 0;
+  }
+  .search-bar {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 0;
+    border: 1px solid rgba(201,169,110,0.2);
+    overflow: hidden;
+  }
+  .search-field {
+    padding: 0.75rem 1rem;
+    border-right: 1px solid rgba(201,169,110,0.2);
+    background: transparent;
+    display: flex; flex-direction: column; gap: 0.2rem;
+    min-width: 0;
+  }
+  .search-field:last-of-type { border-right: none; }
+  .search-label {
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); font-weight: 500; white-space: nowrap;
+  }
+  .search-input {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(201,169,110,0.25);
+    border-radius: 2px;
+    outline: none;
+    color: var(--white); font-family: 'Jost', sans-serif;
+    font-size: 0.82rem; font-weight: 300;
+    width: 100%; cursor: pointer;
+    padding: 0.3rem 0.4rem;
+    color-scheme: dark;
+    min-width: 0;
+  }
+  .search-input option { background: var(--navy); }
+  .search-btn {
+    background: var(--gold); border: none;
+    padding: 0 1.2rem; cursor: pointer;
+    font-family: 'Jost', sans-serif; font-size: 0.7rem;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--navy); transition: background 0.2s;
+    white-space: nowrap; min-width: 0;
+  }
+  .search-btn:hover { background: var(--gold-light); }
+
+  /* ─── SECTION COMMONS ─── */
+  section { padding: 6rem 2rem; }
+  .section-label {
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300;
+    line-height: 1.15; color: var(--text-dark);
+  }
+  .section-title em { font-style: italic; }
+  .section-title.light { color: var(--white); }
+  .section-line {
+    width: 48px; height: 1px; background: var(--gold);
+    margin: 1.5rem 0;
+  }
+  .section-desc { color: var(--text-mid); max-width: 500px; font-size: 0.95rem; }
+  .section-desc.light { color: rgba(255,255,255,0.65); }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* ─── ROOMS ─── */
+  .rooms-section { background: var(--cream); }
+  .rooms-header { margin-bottom: 3.5rem; }
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .room-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+  .room-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .room-img {
+    width: 100%; height: 240px;
+    display: block;
+    transition: transform 0.5s;
+  }
+  img.room-img { object-fit: cover; }
+  .room-card:hover .room-img { transform: scale(1.03); }
+  .room-img-wrap { overflow: hidden; position: relative; }
+  .room-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--gold); color: var(--navy);
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; font-weight: 500;
+  }
+  .room-body { padding: 1.5rem; }
+  .room-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .room-desc { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 1.25rem; }
+  .room-features {
+    display: flex; gap: 1.25rem;
+    margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .room-feat {
+    font-size: 0.75rem; color: var(--text-light);
+    display: flex; align-items: center; gap: 0.35rem;
+    letter-spacing: 0.03em;
+  }
+  .feat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); display: inline-block; }
+  .room-footer { display: flex; align-items: center; justify-content: space-between; }
+  .room-price { display: flex; flex-direction: column; }
+  .price-from { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); }
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 400; line-height: 1;
+    color: var(--text-dark);
+  }
+  .price-night { font-size: 0.7rem; color: var(--text-light); }
+  .room-book {
+    background: var(--navy); color: var(--white);
+    border: none; padding: 0.6rem 1.4rem;
+    font-family: 'Jost', sans-serif; font-size: 0.7rem;
+    font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.2s;
+    border-radius: var(--radius);
+  }
+  .room-book:hover { background: var(--navy-light); }
+
+  /* ─── FEATURES ─── */
+  .features-section { background: var(--navy); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+  }
+  .feature-item {
+    padding: 2rem;
+    border: 1px solid rgba(201,169,110,0.15);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-item:hover { border-color: rgba(201,169,110,0.5); transform: translateY(-2px); }
+  .feature-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem; font-weight: 300; line-height: 1;
+    color: rgba(201,169,110,0.25); margin-bottom: 1rem;
+  }
+  .feature-title {
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.05em;
+    color: var(--white); margin-bottom: 0.75rem; text-transform: uppercase;
+  }
+  .feature-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+  /* ─── BOOKING FORM ─── */
+  .booking-section { background: var(--cream-dark); }
+  .booking-wrapper {
+    display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem;
+    align-items: start;
+  }
+  .booking-aside { padding-top: 1rem; }
+  .booking-aside blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 300; font-style: italic;
+    line-height: 1.5; color: var(--text-dark); margin: 1.5rem 0;
+  }
+  .booking-aside blockquote::before {
+    content: '"'; font-size: 4rem; color: var(--gold);
+    line-height: 0; display: block; margin-bottom: 1rem;
+  }
+  .booking-form-panel {
+    background: var(--white);
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 400; margin-bottom: 2rem;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-mid); font-weight: 500; }
+  input[type="text"], input[type="email"], input[type="date"], select, textarea {
+    border: 1px solid #DDD; border-radius: var(--radius);
+    padding: 0.7rem 1rem; font-family: 'Jost', sans-serif;
+    font-size: 0.9rem; font-weight: 300; color: var(--text-dark);
+    background: var(--white); outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+  textarea { resize: vertical; min-height: 90px; }
+  .form-submit {
+    width: 100%; padding: 1rem;
+    background: var(--navy); color: var(--white); border: none;
+    font-family: 'Jost', sans-serif; font-size: 0.8rem;
+    font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; margin-top: 1rem;
+    transition: background 0.2s, transform 0.15s;
+    border-radius: var(--radius);
+  }
+  .form-submit:hover { background: var(--navy-light); transform: translateY(-1px); }
+  .form-note { font-size: 0.75rem; color: var(--text-light); text-align: center; margin-top: 1rem; }
+
+  /* ─── ADMIN PREVIEW ─── */
+  .admin-section { background: var(--white); }
+  .admin-preview {
+    margin-top: 3rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .admin-topbar {
+    background: var(--navy); padding: 0.75rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .admin-topbar-logo {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold); font-size: 1.1rem; letter-spacing: 0.1em;
+  }
+  .admin-topbar-actions { display: flex; align-items: center; gap: 1rem; }
+  .admin-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--gold); color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 500;
+  }
+  .admin-body { display: grid; grid-template-columns: 200px 1fr; }
+  .admin-sidebar {
+    background: var(--navy-mid); padding: 1.5rem 0;
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+  .admin-nav-item {
+    padding: 0.7rem 1.5rem; font-size: 0.8rem; font-weight: 400;
+    color: rgba(255,255,255,0.5); cursor: pointer;
+    display: flex; align-items: center; gap: 0.75rem;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .admin-nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+  .admin-nav-item.active { background: rgba(201,169,110,0.12); color: var(--gold); border-left: 2px solid var(--gold); }
+  .admin-main { padding: 1.5rem; background: #F8F9FA; }
+  .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card {
+    background: var(--white); padding: 1.25rem;
+    border: 1px solid #E5E7EB; border-radius: 6px;
+  }
+  .stat-label { font-size: 0.7rem; color: var(--text-light); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; color: var(--text-dark); line-height: 1; }
+  .stat-change { font-size: 0.7rem; margin-top: 0.35rem; }
+  .stat-change.up { color: #22C55E; }
+  .stat-change.down { color: #EF4444; }
+  .admin-panels { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; }
+  .admin-panel { background: var(--white); border: 1px solid #E5E7EB; border-radius: 6px; overflow: hidden; }
+  .admin-panel-head { padding: 1rem 1.25rem; border-bottom: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; }
+  .admin-panel-head h4 { font-size: 0.8rem; font-weight: 500; color: var(--text-dark); letter-spacing: 0.04em; text-transform: uppercase; }
+  .panel-link { font-size: 0.7rem; color: var(--gold); cursor: pointer; letter-spacing: 0.04em; }
+  .booking-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .booking-table th { padding: 0.6rem 1rem; text-align: left; font-weight: 500; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); border-bottom: 1px solid #F0F0F0; }
+  .booking-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #F9F9F9; color: var(--text-dark); }
+  .booking-table tr:last-child td { border-bottom: none; }
+  .status-pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem; font-weight: 500; }
+  .status-confirmed { background: #DCFCE7; color: #16A34A; }
+  .status-pending { background: #FEF9C3; color: #CA8A04; }
+  .status-checkedin { background: #DBEAFE; color: #2563EB; }
+  .occ-bars { padding: 1rem 1.25rem; }
+  .occ-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; }
+  .occ-label { font-size: 0.75rem; min-width: 80px; color: var(--text-mid); }
+  .occ-track { flex: 1; height: 6px; background: #F3F4F6; border-radius: 3px; overflow: hidden; }
+  .occ-fill { height: 100%; border-radius: 3px; background: var(--gold); }
+  .occ-val { font-size: 0.75rem; font-weight: 500; color: var(--text-dark); min-width: 30px; text-align: right; }
+
+  /* ─── REVIEWS ─── */
+  .reviews-section { background: var(--navy); padding: 6rem 2rem; }
+  .reviews-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2rem; margin-top: 3.5rem;
+  }
+  .review-card {
+    padding: 2rem;
+    border: 1px solid rgba(201,169,110,0.15);
+    background: rgba(255,255,255,0.03);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .review-card:hover { border-color: rgba(201,169,110,0.4); transform: translateY(-3px); }
+  .stars { color: var(--gold); font-size: 0.85rem; letter-spacing: 0.1em; margin-bottom: 1rem; }
+  .review-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 300; font-style: italic;
+    color: rgba(255,255,255,0.85); line-height: 1.65; margin-bottom: 1.5rem;
+  }
+  .review-author { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+  .review-stay { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 0.2rem; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #080F18;
+    padding: 4rem 2rem 2rem;
+    color: rgba(255,255,255,0.4);
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 300; letter-spacing: 0.12em;
+    color: var(--gold); margin-bottom: 1rem;
+  }
+  .footer-about { font-size: 0.82rem; line-height: 1.8; }
+  .footer-col h5 {
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6); margin-bottom: 1.25rem; font-weight: 500;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+  .footer-col ul a:hover { color: var(--gold); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-bottom p { font-size: 0.75rem; }
+  .footer-badge { font-size: 0.7rem; background: rgba(201,169,110,0.1); color: var(--gold); padding: 0.3rem 0.9rem; border: 1px solid rgba(201,169,110,0.25); border-radius: 20px; letter-spacing: 0.08em; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.7);
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); max-width: 520px; width: 90%;
+    padding: 2.5rem; position: relative;
+    border: 1px solid var(--border);
+    animation: fadeUp 0.25s ease;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; font-size: 1.5rem;
+    cursor: pointer; color: var(--text-light); line-height: 1;
+  }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; margin-bottom: 0.5rem; }
+  .modal p { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 1.5rem; }
+  .modal-success { text-align: center; padding: 1rem 0; }
+  .modal-success .check { font-size: 3rem; color: var(--gold); margin-bottom: 1rem; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes scrollLine {
+    0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); }
+    100% { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .search-bar { grid-template-columns: 1fr 1fr; width: 100%; box-sizing: border-box; }
+    .search-field { padding: 0.6rem 0.75rem; }
+    .search-btn { grid-column: 1 / -1; padding: 0.85rem; }
+    .rooms-grid, .features-grid, .reviews-grid { grid-template-columns: 1fr; }
+    .booking-wrapper { grid-template-columns: 1fr; gap: 2rem; }
+    .admin-body { grid-template-columns: 1fr; }
+    .admin-sidebar { display: none; }
+    .admin-stats { grid-template-columns: 1fr 1fr; }
+    .admin-panels { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ─── BOOKING STEPS ─── */
+  .booking-step { animation: fadeUp 0.3s ease both; }
+  .step-ind { display:flex;flex-direction:column;align-items:center;gap:0.4rem; }
+  .step-circle {
+    width:36px;height:36px;border-radius:50%;
+    border:2px solid rgba(201,169,110,0.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.8rem;font-weight:500;color:rgba(255,255,255,0.3);
+    background:transparent;transition:all 0.3s;
+  }
+  .step-ind.active .step-circle { border-color:var(--gold);color:var(--gold);background:rgba(201,169,110,0.1); }
+  .step-ind.done .step-circle { border-color:var(--gold);background:var(--gold);color:var(--navy); }
+  .step-lbl { font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(0,0,0,0.35);white-space:nowrap; }
+  .step-ind.active .step-lbl, .step-ind.done .step-lbl { color:var(--gold); }
+  .step-line { flex:1;height:1px;background:rgba(201,169,110,0.2);min-width:40px;margin-bottom:1.2rem; }
+  .pay-btn:hover { border-color:var(--gold) !important; }
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="#"><span>Azure</span> Hotel</a>
+  <ul class="nav-links">
+    <li><a href="#rooms">Rooms</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#booking">Book Now</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal()">Request Demo</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero-section">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Hotel Booking Software Demo</p>
+    <h1>Where Luxury Meets <em>Effortless</em> Management</h1>
+    <p>A complete hotel management platform — from seamless guest bookings to powerful back-office control. Built for modern hospitality.</p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn-primary" onclick="goToStep(1)">Book a Room</a>
+      <a href="#features" class="btn-outline">Explore Features</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- SEARCH BAR -->
+<div class="search-section">
+  <div class="search-bar">
+    <div class="search-field">
+      <span class="search-label">Check-in</span>
+      <input type="date" class="search-input" id="checkin" />
+    </div>
+    <div class="search-field">
+      <span class="search-label">Check-out</span>
+      <input type="date" class="search-input" id="checkout" />
+    </div>
+    <div class="search-field">
+      <span class="search-label">Guests</span>
+      <select class="search-input" id="guests">
+        <option>1 Guest</option>
+        <option selected>2 Guests</option>
+        <option>3 Guests</option>
+        <option>4+ Guests</option>
+      </select>
+    </div>
+    <div class="search-field">
+      <span class="search-label">Room Type</span>
+      <select class="search-input" id="roomtype">
+        <option>Any Room</option>
+        <option>Deluxe Room</option>
+        <option>Suite</option>
+        <option>Penthouse</option>
+      </select>
+    </div>
+    <button class="search-btn" onclick="searchRooms()">Check Availability</button>
+  </div>
+</div>
+
+<!-- ROOMS -->
+<section class="rooms-section" id="rooms">
+  <div class="container">
+    <div class="rooms-header">
+      <p class="section-label">Our Accommodations</p>
+      <h2 class="section-title">Curated Rooms &amp; <em>Suites</em></h2>
+      <div class="section-line"></div>
+      <p class="section-desc">Each room is meticulously designed to offer an unparalleled experience of comfort, elegance, and modern sophistication.</p>
+    </div>
+    <div class="rooms-grid">
+      <div class="room-card">
+        <div class="room-img-wrap">
+          <div id="img-deluxe" class="room-img room-ph" style="background:linear-gradient(160deg,#1A2E42 0%,#0D1B2A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
+  <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="20" width="60" height="35" rx="1" fill="#243D56"/>
+    <rect x="16" y="28" width="12" height="12" rx="1" fill="#0D1B2A" opacity=".7"/>
+    <rect x="34" y="28" width="12" height="12" rx="1" fill="#0D1B2A" opacity=".7"/>
+    <rect x="52" y="28" width="12" height="12" rx="1" fill="#0D1B2A" opacity=".7"/>
+    <rect x="28" y="42" width="24" height="13" rx="1" fill="#0D1B2A" opacity=".6"/>
+    <rect x="20" y="10" width="40" height="12" rx="1" fill="#243D56"/>
+    <rect x="36" y="4" width="8" height="8" rx="1" fill="#C9A96E" opacity=".5"/>
+  </svg>
+  <span style="font-family:Georgia,serif;font-size:11px;letter-spacing:4px;color:#C9A96E;opacity:.8;text-transform:uppercase;">Deluxe City View</span>
+</div>
+          <span class="room-badge">Available</span>
+        </div>
+        <div class="room-body">
+          <h3 class="room-name">Deluxe City View</h3>
+          <p class="room-desc">Refined interiors with panoramic city skyline views and king-size comfort.</p>
+          <div class="room-features">
+            <span class="room-feat"><span class="feat-dot"></span> 45 m²</span>
+            <span class="room-feat"><span class="feat-dot"></span> King Bed</span>
+            <span class="room-feat"><span class="feat-dot"></span> City View</span>
+            <span class="room-feat"><span class="feat-dot"></span> Free Wi-Fi</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price">
+              <span class="price-from">From</span>
+              <span class="price-amount">$280</span>
+              <span class="price-night">per night</span>
+            </div>
+            <button class="room-book" onclick="bookRoom(0)">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-img-wrap">
+          <div id="img-suite" class="room-img room-ph" style="background:linear-gradient(160deg,#0D1B2A 0%,#152436 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
+  <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="15" width="35" height="40" rx="1" fill="#243D56"/>
+    <rect x="42" y="15" width="33" height="18" rx="1" fill="#243D56"/>
+    <rect x="42" y="37" width="33" height="18" rx="1" fill="#243D56"/>
+    <rect x="10" y="22" width="25" height="16" rx="1" fill="#0D1B2A" opacity=".6"/>
+    <rect x="47" y="20" width="23" height="10" rx="1" fill="#0D1B2A" opacity=".5"/>
+    <rect x="47" y="41" width="23" height="10" rx="1" fill="#0D1B2A" opacity=".5"/>
+    <rect x="10" y="42" width="25" height="10" rx="1" fill="#C9A96E" opacity=".15"/>
+  </svg>
+  <span style="font-family:Georgia,serif;font-size:11px;letter-spacing:4px;color:#C9A96E;opacity:.8;text-transform:uppercase;">Junior Suite</span>
+</div>
+          <span class="room-badge">Popular</span>
+        </div>
+        <div class="room-body">
+          <h3 class="room-name">Junior Suite</h3>
+          <p class="room-desc">A gracious suite with a separate lounge, ocean terrace, and bespoke amenities.</p>
+          <div class="room-features">
+            <span class="room-feat"><span class="feat-dot"></span> 75 m²</span>
+            <span class="room-feat"><span class="feat-dot"></span> King Bed</span>
+            <span class="room-feat"><span class="feat-dot"></span> Ocean View</span>
+            <span class="room-feat"><span class="feat-dot"></span> Minibar</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price">
+              <span class="price-from">From</span>
+              <span class="price-amount">$490</span>
+              <span class="price-night">per night</span>
+            </div>
+            <button class="room-book" onclick="bookRoom(1)">Book Now</button>
+          </div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-img-wrap">
+          <div id="img-penthouse" class="room-img room-ph" style="background:linear-gradient(160deg,#080F18 0%,#0D1B2A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
+  <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="15" y="25" width="50" height="30" rx="1" fill="#243D56"/>
+    <rect x="22" y="10" width="36" height="18" rx="1" fill="#1A2E42"/>
+    <rect x="28" y="3" width="24" height="10" rx="1" fill="#1A2E42"/>
+    <rect x="20" y="32" width="12" height="10" rx="1" fill="#0D1B2A" opacity=".7"/>
+    <rect x="38" y="32" width="12" height="10" rx="1" fill="#0D1B2A" opacity=".7"/>
+    <rect x="56" y="32" width="6" height="10" rx="1" fill="#0D1B2A" opacity=".5"/>
+    <rect x="30" y="45" width="20" height="10" rx="1" fill="#0D1B2A" opacity=".6"/>
+    <circle cx="40" cy="7" r="3" fill="#C9A96E" opacity=".6"/>
+  </svg>
+  <span style="font-family:Georgia,serif;font-size:11px;letter-spacing:4px;color:#C9A96E;opacity:.8;text-transform:uppercase;">Azure Penthouse</span>
+</div>
+          <span class="room-badge" style="background:var(--navy);color:var(--gold);">Exclusive</span>
+        </div>
+        <div class="room-body">
+          <h3 class="room-name">Azure Penthouse</h3>
+          <p class="room-desc">The pinnacle of luxury — a private floor with butler service and rooftop terrace.</p>
+          <div class="room-features">
+            <span class="room-feat"><span class="feat-dot"></span> 220 m²</span>
+            <span class="room-feat"><span class="feat-dot"></span> 2 Bedrooms</span>
+            <span class="room-feat"><span class="feat-dot"></span> Rooftop</span>
+            <span class="room-feat"><span class="feat-dot"></span> Butler</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price">
+              <span class="price-from">From</span>
+              <span class="price-amount">$1,200</span>
+              <span class="price-night">per night</span>
+            </div>
+            <button class="room-book" onclick="bookRoom(2)">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOFTWARE FEATURES -->
+<section class="features-section" id="features">
+  <div class="container">
+    <p class="section-label">Software Capabilities</p>
+    <h2 class="section-title light">Everything You Need to <em>Run Flawlessly</em></h2>
+    <div class="section-line"></div>
+    <p class="section-desc light">Azure's booking platform handles every touchpoint — from the first click to check-out and beyond.</p>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-num">01</div>
+        <div class="feature-title">Real-Time Availability</div>
+        <p class="feature-desc">Live room inventory synced across all channels. Prevent double-bookings with our instant conflict detection engine.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-num">02</div>
+        <div class="feature-title">Dynamic Pricing Engine</div>
+        <p class="feature-desc">AI-powered rate management that adjusts pricing based on occupancy, demand patterns, and seasonal trends.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-num">03</div>
+        <div class="feature-title">Channel Manager</div>
+        <p class="feature-desc">Sync with Booking.com, Expedia, Airbnb, and 200+ OTAs from a single dashboard without manual updates.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-num">04</div>
+        <div class="feature-title">Guest CRM</div>
+        <p class="feature-desc">Build lasting relationships with full guest profiles, stay history, preferences, and automated loyalty programs.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-num">05</div>
+        <div class="feature-title">Housekeeping Module</div>
+        <p class="feature-desc">Assign, track, and verify room tasks in real time. Staff mobile app keeps your team coordinated and efficient.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-num">06</div>
+        <div class="feature-title">Analytics &amp; Reports</div>
+        <p class="feature-desc">Revenue, occupancy, ADR, RevPAR — all your key metrics in one beautiful dashboard, exportable in one click.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING FLOW -->
+<section class="booking-section" id="booking" style="background:var(--cream-dark);">
+  <div class="container">
+    <p class="section-label" style="text-align:center;">Direct Booking</p>
+    <h2 class="section-title" style="text-align:center;">Reserve Your <em>Stay</em></h2>
+    <div class="section-line" style="margin:1.5rem auto;"></div>
+
+    <!-- Step Indicators -->
+    <div id="step-indicators" style="display:flex;justify-content:center;align-items:center;gap:0;margin-bottom:3rem;max-width:500px;margin-left:auto;margin-right:auto;">
+      <div class="step-ind active" id="ind-1">
+        <div class="step-circle">1</div>
+        <div class="step-lbl">Availability</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-ind" id="ind-2">
+        <div class="step-circle">2</div>
+        <div class="step-lbl">Your Details</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-ind" id="ind-3">
+        <div class="step-circle">3</div>
+        <div class="step-lbl">Payment</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Availability -->
+    <div id="step-1" class="booking-step">
+      <div class="booking-form-panel" style="max-width:680px;margin:0 auto;">
+        <h3 class="form-title">Check Availability</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s1-checkin">Check-in Date</label>
+            <input type="date" id="s1-checkin" />
+          </div>
+          <div class="form-group">
+            <label for="s1-checkout">Check-out Date</label>
+            <input type="date" id="s1-checkout" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s1-guests">Guests</label>
+            <select id="s1-guests">
+              <option>1 Guest</option>
+              <option selected>2 Guests</option>
+              <option>3 Guests</option>
+              <option>4+ Guests</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="s1-room">Room Type</label>
+            <select id="s1-room">
+              <option>Deluxe City View — $280/night</option>
+              <option>Junior Suite — $490/night</option>
+              <option>Azure Penthouse — $1,200/night</option>
+            </select>
+          </div>
+        </div>
+        <div id="s1-summary" style="display:none;background:var(--cream);padding:1rem;border-left:3px solid var(--gold);margin:1rem 0;font-size:0.85rem;color:var(--text-mid);line-height:1.8;"></div>
+        <button class="form-submit" onclick="goToStep2()">Check Availability &amp; Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Guest Details -->
+    <div id="step-2" class="booking-step" style="display:none;">
+      <div class="booking-form-panel" style="max-width:680px;margin:0 auto;">
+        <h3 class="form-title">Your Details</h3>
+        <div id="s2-booking-summary" style="background:var(--cream);padding:0.8rem 1rem;margin-bottom:1.5rem;border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s2-fname">First Name</label>
+            <input type="text" id="s2-fname" placeholder="Juan" />
+          </div>
+          <div class="form-group">
+            <label for="s2-lname">Last Name</label>
+            <input type="text" id="s2-lname" placeholder="Dela Cruz" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s2-email">Email Address</label>
+            <input type="email" id="s2-email" placeholder="juan@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="s2-phone">Phone Number</label>
+            <input type="text" id="s2-phone" placeholder="+63 9XX XXX XXXX" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="s2-special">Special Requests</label>
+            <textarea id="s2-special" placeholder="Early check-in, dietary requirements, anniversary setup..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1rem;">
+          <button class="btn-outline" onclick="goToStep(1)" style="flex:1;padding:0.9rem;border-color:var(--navy);color:var(--navy);">← Back</button>
+          <button class="form-submit" onclick="goToStep3()" style="flex:2;margin-top:0;">Continue to Payment →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Payment -->
+    <div id="step-3" class="booking-step" style="display:none;">
+      <div class="booking-form-panel" style="max-width:680px;margin:0 auto;">
+        <h3 class="form-title">Payment</h3>
+        <div id="s3-booking-summary" style="background:var(--cream);padding:0.8rem 1rem;margin-bottom:1.5rem;border-left:3px solid var(--gold);font-size:0.82rem;color:var(--text-mid);line-height:1.8;"></div>
+
+        <p style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-mid);margin-bottom:1rem;">Choose Payment Method</p>
+
+        <div style="display:grid;gap:0.75rem;margin-bottom:2rem;">
+          <button class="pay-btn" onclick="confirmPayment('Credit / Debit Card')" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid #DDD;border-radius:2px;cursor:pointer;text-align:left;transition:border-color 0.2s;">
+            <span style="font-size:1.4rem;">💳</span>
+            <div>
+              <div style="font-size:0.85rem;font-weight:500;color:var(--text-dark);">Credit / Debit Card</div>
+              <div style="font-size:0.75rem;color:var(--text-light);">Visa, Mastercard, JCB</div>
+            </div>
+          </button>
+          <button class="pay-btn" onclick="confirmPayment('PayPal')" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid #DDD;border-radius:2px;cursor:pointer;text-align:left;transition:border-color 0.2s;">
+            <span style="font-size:1.4rem;">🅿️</span>
+            <div>
+              <div style="font-size:0.85rem;font-weight:500;color:var(--text-dark);">PayPal</div>
+              <div style="font-size:0.75rem;color:var(--text-light);">Pay securely via PayPal</div>
+            </div>
+          </button>
+          <button class="pay-btn" onclick="confirmPayment('GCash')" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid #DDD;border-radius:2px;cursor:pointer;text-align:left;transition:border-color 0.2s;">
+            <span style="font-size:1.4rem;">📱</span>
+            <div>
+              <div style="font-size:0.85rem;font-weight:500;color:var(--text-dark);">GCash</div>
+              <div style="font-size:0.75rem;color:var(--text-light);">Pay via GCash e-wallet</div>
+            </div>
+          </button>
+          <button class="pay-btn" onclick="confirmPayment('Pay at Hotel')" style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid #DDD;border-radius:2px;cursor:pointer;text-align:left;transition:border-color 0.2s;">
+            <span style="font-size:1.4rem;">🏨</span>
+            <div>
+              <div style="font-size:0.85rem;font-weight:500;color:var(--text-dark);">Pay at Hotel</div>
+              <div style="font-size:0.75rem;color:var(--text-light);">Pay on arrival — no card needed</div>
+            </div>
+          </button>
+        </div>
+
+        <button class="btn-outline" onclick="goToStep(2)" style="width:100%;padding:0.9rem;border-color:var(--navy);color:var(--navy);">← Back to Details</button>
+        <p class="form-note" style="margin-top:1rem;">Your reservation is not charged until confirmed. Best rate guaranteed.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ADMIN DASHBOARD PREVIEW -->
+<section class="admin-section" id="admin">
+  <div class="container">
+    <p class="section-label">Back-Office</p>
+    <h2 class="section-title">Powerful Admin <em>Dashboard</em></h2>
+    <div class="section-line"></div>
+    <p class="section-desc">A complete command center for your property — occupancy, reservations, revenue, and operations at a glance.</p>
+
+    <div class="admin-preview">
+      <div class="admin-topbar">
+        <span class="admin-topbar-logo">Azure · Admin</span>
+        <div class="admin-topbar-actions">
+          <span style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Today: <span id="today-date"></span></span>
+          <div class="admin-avatar">JD</div>
+        </div>
+      </div>
+      <div class="admin-body">
+        <div class="admin-sidebar">
+          <div class="admin-nav-item active">&#9632; Dashboard</div>
+          <div class="admin-nav-item">&#9632; Reservations</div>
+          <div class="admin-nav-item">&#9632; Rooms</div>
+          <div class="admin-nav-item">&#9632; Guests</div>
+          <div class="admin-nav-item">&#9632; Housekeeping</div>
+          <div class="admin-nav-item">&#9632; Reports</div>
+          <div class="admin-nav-item">&#9632; Settings</div>
+        </div>
+        <div class="admin-main">
+          <div class="admin-stats">
+            <div class="stat-card">
+              <div class="stat-label">Occupancy Rate</div>
+              <div class="stat-num">84%</div>
+              <div class="stat-change up">↑ 6% vs last week</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Today's Check-ins</div>
+              <div class="stat-num">12</div>
+              <div class="stat-change up">↑ 3 from yesterday</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Monthly Revenue</div>
+              <div class="stat-num">$94k</div>
+              <div class="stat-change up">↑ 11% vs last month</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Pending Requests</div>
+              <div class="stat-num">7</div>
+              <div class="stat-change down">↓ 2 resolved today</div>
+            </div>
+          </div>
+          <div class="admin-panels">
+            <div class="admin-panel">
+              <div class="admin-panel-head">
+                <h4>Upcoming Reservations</h4>
+                <span class="panel-link">View All →</span>
+              </div>
+              <table class="booking-table">
+                <thead>
+                  <tr>
+                    <th>Guest</th>
+                    <th>Room</th>
+                    <th>Check-in</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sophia Laurent</td>
+                    <td>Junior Suite</td>
+                    <td>Today</td>
+                    <td><span class="status-pill status-checkedin">Checked In</span></td>
+                  </tr>
+                  <tr>
+                    <td>Marcus Webb</td>
+                    <td>Deluxe 304</td>
+                    <td>Tomorrow</td>
+                    <td><span class="status-pill status-confirmed">Confirmed</span></td>
+                  </tr>
+                  <tr>
+                    <td>Elena Vasquez</td>
+                    <td>Azure Penthouse</td>
+                    <td>Mar 22</td>
+                    <td><span class="status-pill status-confirmed">Confirmed</span></td>
+                  </tr>
+                  <tr>
+                    <td>James Okonkwo</td>
+                    <td>Deluxe 208</td>
+                    <td>Mar 24</td>
+                    <td><span class="status-pill status-pending">Pending</span></td>
+                  </tr>
+                  <tr>
+                    <td>Priya Nair</td>
+                    <td>Junior Suite</td>
+                    <td>Mar 25</td>
+                    <td><span class="status-pill status-confirmed">Confirmed</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="admin-panel">
+              <div class="admin-panel-head">
+                <h4>Room Occupancy</h4>
+                <span class="panel-link">Details →</span>
+              </div>
+              <div class="occ-bars">
+                <div class="occ-row">
+                  <span class="occ-label">Deluxe</span>
+                  <div class="occ-track"><div class="occ-fill" style="width:90%"></div></div>
+                  <span class="occ-val">90%</span>
+                </div>
+                <div class="occ-row">
+                  <span class="occ-label">Suite</span>
+                  <div class="occ-track"><div class="occ-fill" style="width:75%"></div></div>
+                  <span class="occ-val">75%</span>
+                </div>
+                <div class="occ-row">
+                  <span class="occ-label">Penthouse</span>
+                  <div class="occ-track"><div class="occ-fill" style="width:60%"></div></div>
+                  <span class="occ-val">60%</span>
+                </div>
+                <div class="occ-row">
+                  <span class="occ-label">Standard</span>
+                  <div class="occ-track"><div class="occ-fill" style="width:82%"></div></div>
+                  <span class="occ-val">82%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section" id="reviews">
+  <div class="container">
+    <p class="section-label">Guest Experiences</p>
+    <h2 class="section-title light">Voices of Our <em>Guests</em></h2>
+    <div class="section-line"></div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">The booking experience was the most seamless I have ever encountered. From check-in to check-out, every detail was handled with extraordinary care.</p>
+        <div class="review-author">Sophia Laurent</div>
+        <div class="review-stay">Junior Suite · February 2026</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">Booking the penthouse was a revelation. The hotel's platform made managing our three-day stay completely effortless — even special requests were handled instantly.</p>
+        <div class="review-author">Marcus Webb</div>
+        <div class="review-stay">Azure Penthouse · January 2026</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">I've stayed at many luxury hotels, but Azure's digital experience sets a new standard. The booking confirmation and pre-arrival communication were impeccable.</p>
+        <div class="review-author">Elena Vasquez</div>
+        <div class="review-stay">Deluxe City View · March 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">Azure Hotel</div>
+        <p class="footer-about">A showcase demo of our hotel booking software — designed to help hospitality businesses deliver luxury digital experiences to their guests.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Rooms</h5>
+        <ul>
+          <li><a href="#">Deluxe Rooms</a></li>
+          <li><a href="#">Junior Suites</a></li>
+          <li><a href="#">Penthouses</a></li>
+          <li><a href="#">Meeting Rooms</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Features</h5>
+        <ul>
+          <li><a href="#">Booking Engine</a></li>
+          <li><a href="#">Channel Manager</a></li>
+          <li><a href="#">Admin Dashboard</a></li>
+          <li><a href="#">Guest CRM</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Azure Hotel Booking Software. All rights reserved.</p>
+      <span class="footer-badge">Demo Site</span>
+    </div>
+  </div>
+</footer>
+<button id="admin-trigger" onclick="document.getElementById('admin-panel').style.display='flex'"
+  style="position:fixed;bottom:18px;left:18px;width:10px;height:10px;border-radius:50%;background:rgba(201,169,110,0.15);border:none;cursor:pointer;z-index:500;padding:0;"
+  title=""></button>
+<!-- BOOKING CONFIRMATION MODAL -->
+<div class="modal-overlay" id="confirm-modal" style="z-index:9000;">
+  <div class="modal" style="max-width:460px;">
+    <button class="modal-close" onclick="resetBooking()">&times;</button>
+    <div class="modal-success">
+      <div style="font-size:2.5rem;color:var(--gold);margin-bottom:1rem;">✦</div>
+      <h2 style="margin-bottom:0.5rem;">Booking Confirmed!</h2>
+      <p style="margin-bottom:1.5rem;">Thank you, <strong id="confirm-name"></strong>. Your reservation is confirmed.</p>
+      <div style="background:var(--cream);padding:1rem 1.25rem;text-align:left;margin-bottom:1.5rem;border-left:3px solid var(--gold);font-size:0.85rem;line-height:2;color:var(--text-mid);">
+        <div><strong>Room:</strong> <span id="confirm-room"></span></div>
+        <div><strong>Payment:</strong> <span id="confirm-method"></span></div>
+        <div><strong>Total:</strong> <span id="confirm-total"></span></div>
+        <div><strong>Reference:</strong> <span id="confirm-ref" style="color:var(--gold);font-weight:500;"></span></div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--text-light);margin-bottom:1.5rem;">A confirmation has been sent to your email. We look forward to welcoming you to Azure Hotel.</p>
+      <button class="btn-primary" onclick="resetBooking()" style="width:100%;">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN IMAGE UPLOAD PANEL -->
+<div id="admin-panel" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;padding:1.5rem;">
+  <div style="background:#0D1B2A;border:1px solid rgba(201,169,110,0.3);border-radius:4px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:2rem;position:relative;">
+    <button onclick="document.getElementById('admin-panel').style.display='none'"
+      style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;">&times;</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#C9A96E;margin-bottom:0.25rem;">Image Manager</div>
+    <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:1.5rem;">Super Admin · Azure Hotel</div>
+    <div style="width:100%;height:1px;background:rgba(201,169,110,0.2);margin-bottom:1.5rem;"></div>
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#C9A96E;margin-bottom:0.6rem;">Hero Background</div>
+      <div id="prev-hero" style="width:100%;height:90px;background:#1A2E42;border-radius:2px;margin-bottom:0.6rem;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;"><span style="font-size:0.75rem;color:rgba(255,255,255,0.3);">No image uploaded</span></div>
+      <label style="display:block;width:100%;padding:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:2px;color:rgba(255,255,255,0.6);font-size:0.78rem;letter-spacing:0.08em;text-align:center;cursor:pointer;">Choose Image<input type="file" accept="image/*" style="display:none;" onchange="previewImg(this,'prev-hero','hero')"></label>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#C9A96E;margin-bottom:0.6rem;">Deluxe City View</div>
+      <div id="prev-deluxe" style="width:100%;height:90px;background:#1A2E42;border-radius:2px;margin-bottom:0.6rem;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;"><span style="font-size:0.75rem;color:rgba(255,255,255,0.3);">No image uploaded</span></div>
+      <label style="display:block;width:100%;padding:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:2px;color:rgba(255,255,255,0.6);font-size:0.78rem;letter-spacing:0.08em;text-align:center;cursor:pointer;">Choose Image<input type="file" accept="image/*" style="display:none;" onchange="previewImg(this,'prev-deluxe','deluxe')"></label>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#C9A96E;margin-bottom:0.6rem;">Junior Suite</div>
+      <div id="prev-suite" style="width:100%;height:90px;background:#1A2E42;border-radius:2px;margin-bottom:0.6rem;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;"><span style="font-size:0.75rem;color:rgba(255,255,255,0.3);">No image uploaded</span></div>
+      <label style="display:block;width:100%;padding:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:2px;color:rgba(255,255,255,0.6);font-size:0.78rem;letter-spacing:0.08em;text-align:center;cursor:pointer;">Choose Image<input type="file" accept="image/*" style="display:none;" onchange="previewImg(this,'prev-suite','suite')"></label>
+    </div>
+    <div style="margin-bottom:2rem;">
+      <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#C9A96E;margin-bottom:0.6rem;">Azure Penthouse</div>
+      <div id="prev-penthouse" style="width:100%;height:90px;background:#1A2E42;border-radius:2px;margin-bottom:0.6rem;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;"><span style="font-size:0.75rem;color:rgba(255,255,255,0.3);">No image uploaded</span></div>
+      <label style="display:block;width:100%;padding:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:2px;color:rgba(255,255,255,0.6);font-size:0.78rem;letter-spacing:0.08em;text-align:center;cursor:pointer;">Choose Image<input type="file" accept="image/*" style="display:none;" onchange="previewImg(this,'prev-penthouse','penthouse')"></label>
+    </div>
+    <div style="width:100%;height:1px;background:rgba(201,169,110,0.2);margin-bottom:1.5rem;"></div>
+    <div id="admin-status" style="font-size:0.75rem;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:1rem;min-height:1.2rem;"></div>
+    <button onclick="generateAndDownload()" style="width:100%;padding:0.9rem;background:#C9A96E;border:none;border-radius:2px;color:#0D1B2A;font-family:'Jost',sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">Download index.html</button>
+  </div>
+</div>
+
+<!-- DEMO REQUEST MODAL -->
+<div class="modal-overlay" id="demo-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('demo-modal')">&times;</button>
+    <h2>Request a Demo</h2>
+    <p>Fill in your details and our team will be in touch within 24 hours.</p>
+    <div class="form-row" style="margin-bottom:1rem;">
+      <div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name" /></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@company.com" /></div>
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label>Property Name</label>
+      <input type="text" placeholder="Hotel or resort name" />
+    </div>
+    <div class="form-group" style="margin-bottom:1.5rem;">
+      <label>Number of Rooms</label>
+      <select><option>1-20</option><option>21-50</option><option>51-100</option><option>100+</option></select>
+    </div>
+    <button class="form-submit" onclick="submitDemo()">Send Request</button>
+  </div>
+</div>
+
+<script>
+  // ── Admin dashboard date ──────────────────────────────────────────────
+  const todayDateEl = document.getElementById('today-date');
+  if (todayDateEl) todayDateEl.textContent = new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+
+  // ── Utility ──────────────────────────────────────────────────────────
+  function openModal() {
+    document.getElementById('demo-modal').classList.add('open');
+  }
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+  }
+  function submitDemo() {
+    closeModal('demo-modal');
+    setTimeout(() => alert('Thank you! Our team will reach out within 24 hours.'), 300);
+  }
+
+  // ── Multi-Step Booking ────────────────────────────────────────────────
+  const roomPrices = { 0: 280, 1: 490, 2: 1200 };
+  let bookingData = {};
+
+  function setDates() {
+    const t  = new Date().toISOString().split('T')[0];
+    const tm = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+    // Hero search bar dates
+    const ci  = document.getElementById('checkin');
+    const co  = document.getElementById('checkout');
+    if (ci) { ci.min = t; ci.value = t; }
+    if (co) { co.min = tm; co.value = tm; }
+
+    // Step 1 booking dates
+    const s1ci = document.getElementById('s1-checkin');
+    const s1co = document.getElementById('s1-checkout');
+    if (s1ci) { s1ci.min = t; s1ci.value = t; }
+    if (s1co) { s1co.min = tm; s1co.value = tm; }
+  }
+  setDates();
+
+  // When check-in changes, update check-out minimum to be at least 1 day after
+  function onCheckinChange(checkinId, checkoutId) {
+    const ci = document.getElementById(checkinId);
+    const co = document.getElementById(checkoutId);
+    if (!ci || !co) return;
+    const ciDate = new Date(ci.value + 'T00:00');
+    const nextDay = new Date(ciDate.getTime() + 86400000).toISOString().split('T')[0];
+    co.min = nextDay;
+    // If checkout is now before or equal to checkin, reset it to next day
+    if (!co.value || co.value <= ci.value) co.value = nextDay;
+  }
+
+  // Attach listeners after DOM ready
+  ['checkin','s1-checkin'].forEach(id => {
+    const el = document.getElementById(id);
+    const outId = id === 'checkin' ? 'checkout' : 's1-checkout';
+    if (el) el.addEventListener('change', () => onCheckinChange(id, outId));
+  });
+
+  function goToStep(n) {
+    document.querySelectorAll('.booking-step').forEach((s, i) => {
+      s.style.display = (i + 1 === n) ? 'block' : 'none';
+    });
+    [1, 2, 3].forEach(i => {
+      const ind = document.getElementById('ind-' + i);
+      if (!ind) return;
+      ind.classList.remove('active', 'done');
+      if (i < n) ind.classList.add('done');
+      else if (i === n) ind.classList.add('active');
+    });
+    const sec = document.getElementById('booking');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function goToStep2() {
+    const ci = document.getElementById('s1-checkin').value;
+    const co = document.getElementById('s1-checkout').value;
+    if (!ci || !co) { alert('Please select check-in and check-out dates.'); return; }
+    if (co <= ci) { alert('Check-out date must be after check-in date.'); document.getElementById('s1-checkout').focus(); return; }
+    const nights = Math.max(1, Math.round((new Date(co) - new Date(ci)) / 86400000));
+    const roomEl  = document.getElementById('s1-room');
+    const roomIdx = roomEl.selectedIndex;
+    const roomName = ['Deluxe City View', 'Junior Suite', 'Azure Penthouse'][roomIdx];
+    const price = roomPrices[roomIdx];
+    const total = price * nights;
+    const guests = document.getElementById('s1-guests').value;
+    bookingData = { ci, co, nights, roomName, price, total, guests };
+    const fmt = d => new Date(d + 'T00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    document.getElementById('s2-booking-summary').innerHTML =
+      '<strong>' + roomName + '</strong> &nbsp;&middot;&nbsp; ' + guests +
+      '<br>' + fmt(ci) + ' &rarr; ' + fmt(co) + ' (' + nights + ' night' + (nights > 1 ? 's' : '') + ')' +
+      ' &nbsp;&middot;&nbsp; <strong>Total: $' + total.toLocaleString() + '</strong>';
+    goToStep(2);
+  }
+
+  function goToStep3() {
+    const fname = document.getElementById('s2-fname').value.trim();
+    const email = document.getElementById('s2-email').value.trim();
+    if (!fname || !email) { alert('Please fill in your name and email.'); return; }
+    bookingData.fname = fname;
+    bookingData.lname = document.getElementById('s2-lname').value.trim();
+    bookingData.email = email;
+    const fmt = d => new Date(d + 'T00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    document.getElementById('s3-booking-summary').innerHTML =
+      '<strong>' + bookingData.roomName + '</strong> &nbsp;&middot;&nbsp; ' + bookingData.guests +
+      '<br>' + fmt(bookingData.ci) + ' &rarr; ' + fmt(bookingData.co) +
+      ' (' + bookingData.nights + ' night' + (bookingData.nights > 1 ? 's' : '') + ')' +
+      '<br>Guest: ' + fname + ' ' + bookingData.lname + ' &nbsp;&middot;&nbsp; ' + email +
+      '<br><strong style="color:var(--text-dark);font-size:1rem;">Total Due: $' + bookingData.total.toLocaleString() + '</strong>';
+    goToStep(3);
+  }
+
+  function confirmPayment(method) {
+    const ref = 'AZH-' + Math.floor(10000 + Math.random() * 90000);
+    document.getElementById('confirm-ref').textContent = ref;
+    document.getElementById('confirm-name').textContent = bookingData.fname || 'Guest';
+    document.getElementById('confirm-room').textContent = bookingData.roomName || 'Room';
+    document.getElementById('confirm-method').textContent = method;
+    document.getElementById('confirm-total').textContent = '$' + (bookingData.total || 0).toLocaleString();
+    document.getElementById('confirm-modal').classList.add('open');
+  }
+
+  function resetBooking() {
+    bookingData = {};
+    closeModal('confirm-modal');
+    goToStep(1);
+    setDates();
+  }
+
+  function searchRooms() {
+    const ci = document.getElementById('checkin').value;
+    const co = document.getElementById('checkout').value;
+    const rt = document.getElementById('roomtype').value;
+    const g  = document.getElementById('guests').value;
+    if (ci) document.getElementById('s1-checkin').value = ci;
+    if (co) document.getElementById('s1-checkout').value = co;
+    if (g)  document.getElementById('s1-guests').value = g;
+    const roomMap = { 'Deluxe Room': 0, 'Suite': 1, 'Penthouse': 2 };
+    if (roomMap[rt] !== undefined) document.getElementById('s1-room').selectedIndex = roomMap[rt];
+    goToStep(1);
+    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Room card Book Now buttons
+  function bookRoom(idx) {
+    document.getElementById('s1-room').selectedIndex = idx;
+    goToStep(1);
+    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) {
+        if (overlay.id === 'confirm-modal') resetBooking();
+        else overlay.classList.remove('open');
+      }
+    });
+  });
+</script>
+
+<script>
+  const uploads = { hero: null, deluxe: null, suite: null, penthouse: null };
+  function previewImg(input, previewId, key) {
+    const file = input.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      uploads[key] = e.target.result;
+      const prev = document.getElementById(previewId);
+      prev.style.backgroundImage = 'url(' + e.target.result + ')';
+      prev.innerHTML = '';
+      document.getElementById('admin-status').textContent = '✓ ' + file.name + ' loaded';
+    };
+    reader.readAsDataURL(file);
+  }
+  function generateAndDownload() {
+    const status = document.getElementById('admin-status');
+    status.textContent = 'Building index.html…';
+    let src = document.documentElement.outerHTML;
+    if (uploads.hero) {
+      src = src.replace(/url\("data:image\/svg\+xml[^"]*"\) center\/cover no-repeat/, 'url("' + uploads.hero + '") center/cover no-repeat');
+    }
+    const roomMap = [
+      { key: 'deluxe', id: 'img-deluxe', label: 'Deluxe City View' },
+      { key: 'suite', id: 'img-suite', label: 'Junior Suite' },
+      { key: 'penthouse', id: 'img-penthouse', label: 'Azure Penthouse' },
+    ];
+    roomMap.forEach(function(room) {
+      if (!uploads[room.key]) return;
+      const openTag = 'id="' + room.id + '"';
+      const start = src.indexOf(openTag);
+      if (start === -1) return;
+      let depth = 1, i = src.indexOf('>', start) + 1;
+      while (i < src.length && depth > 0) {
+        if (src[i] === '<') {
+          if (src.substring(i, i+2) === '</') { depth--; if(depth===0) break; i+=2; }
+          else { depth++; i++; }
+        } else { i++; }
+      }
+      const end = src.indexOf('>', i) + 1;
+      src = src.substring(0, start - 1) + '<img class="room-img" src="' + uploads[room.key] + '" alt="' + room.label + '" style="width:100%;height:240px;object-fit:cover;display:block;">' + src.substring(end);
+    });
+    src = src.replace(/<!-- ADMIN IMAGE UPLOAD PANEL -->[\s\S]*?<\/div>\s*<\/div>\s*
+/, '');
+    src = src.replace(/<button id="admin-trigger"[\s\S]*?<\/button>/, '');
+    src = src.replace(/<script>\s*const uploads[\s\S]*?<\/script>/, '');
+    const blob = new Blob([src], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'index.html'; a.click();
+    URL.revokeObjectURL(url);
+    status.textContent = '✓ index.html downloaded — drop into Netlify!';
+  }
+</script>
+</body>
+</html>
